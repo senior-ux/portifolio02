@@ -8,6 +8,7 @@ import ThreeScene from './components/ThreeScene';
 const typedPhrases = [
   'CEH Certified',
   'Founder of Shop By Me',
+  'CEO of AL-ODEM Enterprises',
   'Ethical Hacker',
   'Frontend Developer',
   'Security Specialist',
