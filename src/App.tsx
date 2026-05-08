@@ -80,6 +80,8 @@ function App() {
   const [visibleText, setVisibleText] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
+  const [contactForm, setContactForm] = useState({ name: '', email: '', message: '' });
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
   useEffect(() => {
     const timeout = window.setTimeout(() => setIsLoading(false), 1800);
@@ -112,6 +114,38 @@ function App() {
     window.addEventListener('mousemove', move);
     return () => window.removeEventListener('mousemove', move);
   }, []);
+
+  const handleContactChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setContactForm(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleContactSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    
+    if (!contactForm.name || !contactForm.email || !contactForm.message) {
+      setSubmitStatus('error');
+      setTimeout(() => setSubmitStatus('idle'), 3000);
+      return;
+    }
+
+    const whatsappNumber = '255624667100';
+    const emailAddress = 'adolphmlasani29@gmail.com';
+    const emailSubject = encodeURIComponent(`New Portfolio Contact: ${contactForm.name}`);
+    const emailBody = encodeURIComponent(`Name: ${contactForm.name}\nEmail: ${contactForm.email}\n\nMessage:\n${contactForm.message}`);
+    
+    const whatsappMessage = encodeURIComponent(`Hi Adolph,\n\nName: ${contactForm.name}\nEmail: ${contactForm.email}\n\nMessage:\n${contactForm.message}`);
+    
+    // Open WhatsApp in new tab
+    window.open(`https://wa.me/${whatsappNumber}?text=${whatsappMessage}`, '_blank');
+    
+    // Open email in new tab with mailto
+    window.open(`mailto:${emailAddress}?subject=${emailSubject}&body=${emailBody}`, '_blank');
+    
+    setSubmitStatus('success');
+    setContactForm({ name: '', email: '', message: '' });
+    setTimeout(() => setSubmitStatus('idle'), 3000);
+  };
 
   const skillRows = useMemo(() => {
     return skills.map((skill) => {
@@ -464,20 +498,57 @@ function App() {
               </div>
             </div>
             <div className="rounded-[2rem] border border-cyan-400/15 bg-slate-950/80 p-6 shadow-cyber backdrop-blur-xl">
-              <form className="space-y-5">
+              <form className="space-y-5" onSubmit={handleContactSubmit}>
                 <div>
                   <label className="mb-2 block text-sm uppercase tracking-[0.22em] text-cyan-300/80">Name</label>
-                  <input className="w-full rounded-3xl border border-slate-700 bg-cyber-900/80 px-4 py-3 text-slate-100 outline-none transition focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-400/20" placeholder="Your name" />
+                  <input 
+                    type="text"
+                    name="name"
+                    value={contactForm.name}
+                    onChange={handleContactChange}
+                    className="w-full rounded-3xl border border-slate-700 bg-cyber-900/80 px-4 py-3 text-slate-100 outline-none transition focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-400/20" 
+                    placeholder="Your name"
+                    required
+                  />
                 </div>
                 <div>
                   <label className="mb-2 block text-sm uppercase tracking-[0.22em] text-cyan-300/80">Email</label>
-                  <input className="w-full rounded-3xl border border-slate-700 bg-cyber-900/80 px-4 py-3 text-slate-100 outline-none transition focus:border-purple-400/60 focus:ring-2 focus:ring-purple-400/20" placeholder="Your email" />
+                  <input 
+                    type="email"
+                    name="email"
+                    value={contactForm.email}
+                    onChange={handleContactChange}
+                    className="w-full rounded-3xl border border-slate-700 bg-cyber-900/80 px-4 py-3 text-slate-100 outline-none transition focus:border-purple-400/60 focus:ring-2 focus:ring-purple-400/20" 
+                    placeholder="Your email"
+                    required
+                  />
                 </div>
                 <div>
                   <label className="mb-2 block text-sm uppercase tracking-[0.22em] text-cyan-300/80">Message</label>
-                  <textarea rows={5} className="w-full rounded-3xl border border-slate-700 bg-cyber-900/80 px-4 py-3 text-slate-100 outline-none transition focus:border-blue-400/60 focus:ring-2 focus:ring-blue-400/20" placeholder="Tell me about your project" />
+                  <textarea 
+                    name="message"
+                    value={contactForm.message}
+                    onChange={handleContactChange}
+                    rows={5} 
+                    className="w-full rounded-3xl border border-slate-700 bg-cyber-900/80 px-4 py-3 text-slate-100 outline-none transition focus:border-blue-400/60 focus:ring-2 focus:ring-blue-400/20" 
+                    placeholder="Tell me about your project"
+                    required
+                  />
                 </div>
-                <button type="button" className="inline-flex w-full items-center justify-center gap-3 rounded-3xl bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-500 px-6 py-4 text-sm font-semibold uppercase tracking-[0.2em] text-slate-950 shadow-glow transition hover:brightness-105">
+                {submitStatus === 'success' && (
+                  <div className="rounded-3xl border border-green-400/30 bg-green-500/10 px-4 py-3 text-sm text-green-300">
+                    ✓ Message sent! Redirecting to WhatsApp and Email...
+                  </div>
+                )}
+                {submitStatus === 'error' && (
+                  <div className="rounded-3xl border border-red-400/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+                    ✗ Please fill in all fields
+                  </div>
+                )}
+                <button 
+                  type="submit"
+                  className="inline-flex w-full items-center justify-center gap-3 rounded-3xl bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-500 px-6 py-4 text-sm font-semibold uppercase tracking-[0.2em] text-slate-950 shadow-glow transition hover:brightness-105 disabled:opacity-50"
+                >
                   Send Message
                 </button>
               </form>
