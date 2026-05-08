@@ -4,6 +4,8 @@ import { FaGithub, FaLinkedin, FaWhatsapp, FaEnvelope, FaDownload, FaStar, FaShi
 import { SiTailwindcss, SiReact, SiJavascript, SiLinux, SiKalilinux, SiFramer, SiThreedotjs } from 'react-icons/si';
 import MatrixRain from './components/MatrixRain';
 import ThreeScene from './components/ThreeScene';
+import { CVSection } from './components/CVSection';
+import { downloadCVHTML } from './utils/cvDownload';
 
 const typedPhrases = [
   'CEH Certified',
@@ -73,6 +75,7 @@ const navItems = [
   { label: 'Skills', href: '#skills' },
   { label: 'Projects', href: '#projects' },
   { label: 'Experience', href: '#experience' },
+  { label: 'CV', href: '#cv' },
   { label: 'Contact', href: '#contact' },
 ];
 
@@ -268,9 +271,9 @@ function App() {
                 <a href="#contact" className="rounded-3xl border border-purple-300/20 bg-purple-500/10 px-6 py-4 text-sm font-semibold uppercase tracking-[0.2em] text-purple-200 transition duration-200 hover:bg-purple-500/20 hover:text-white">
                   Contact Me
                 </a>
-                <a href="/resume.pdf" className="rounded-3xl bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-500 px-6 py-4 text-sm font-semibold uppercase tracking-[0.2em] text-slate-950 transition duration-200 hover:brightness-110">
+                <button onClick={downloadCVHTML} className="rounded-3xl bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-500 px-6 py-4 text-sm font-semibold uppercase tracking-[0.2em] text-slate-950 transition duration-200 hover:brightness-110 border-none cursor-pointer">
                   <FaDownload className="mr-2 inline-block" /> Download CV
-                </a>
+                </button>
               </div>
             </div>
 
@@ -466,6 +469,10 @@ function App() {
               <p className="mt-3 text-slate-400">Practical experience with networking architecture, IP camera systems, secure web interfaces, and responsive UI engineering.</p>
             </div>
           </div>
+        </section>
+
+        <section id="cv" className="space-y-8 py-16">
+          <CVSection onDownload={downloadCVHTML} />
         </section>
 
         <section id="contact" className="space-y-8 py-16">
